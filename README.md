@@ -19,7 +19,6 @@ SHIRASAGI 開発用の Vagrant Box を使用するには次のいずれかの環
 * [Vagrant](https://www.vagrantup.com/):
   * [ダウンロード](https://www.vagrantup.com/downloads.html) から各環境に応じたインストーラーをダウンロードし、インストーラーを実行してください。
   * インストーラー実行後は、インストーラーの指示にしたがってインストールを完了させてください。
-  * 最新版の 1.9.4, 1.9.3 では正常に起動しません。1.9.2 をインストールしてください。
 
 ### 動作確認のとれた vagrant バージョン
 
@@ -27,8 +26,8 @@ SHIRASAGI 開発用の Vagrant Box を使用するには次のいずれかの環
 
 | バージョン | 動作                       | ダウンロード |
 |------------|----------------------------|----------|
-| 2.2.0      |                         | |
-| 1.9.2◎    | Windows/Mac ともに OK      | [Win](https://releases.hashicorp.com/vagrant/1.9.2/vagrant_1.9.2.msi) / [Mac](https://releases.hashicorp.com/vagrant/1.9.2/vagrant_1.9.2.dmg) |
+| 2.2.0◎      | Windows/Mac ともに OK                     |[Win 64bit](https://releases.hashicorp.com/vagrant/2.2.0/vagrant_2.2.0_x86_64.msi) / [Mac](https://releases.hashicorp.com/vagrant/2.2.0/vagrant_2.2.0_x86_64.dmg) |
+| 1.9.2    | Windows/Mac ともに OK      | [Win](https://releases.hashicorp.com/vagrant/1.9.2/vagrant_1.9.2.msi) / [Mac](https://releases.hashicorp.com/vagrant/1.9.2/vagrant_1.9.2.dmg) |
 | 1.9.0      | Windows/Mac ともに OK      | [Win](https://releases.hashicorp.com/vagrant/1.9.0/vagrant_1.9.0.msi) / [Mac](https://releases.hashicorp.com/vagrant/1.9.0/vagrant_1.9.0.dmg) |
 
 [Download Vagrant](https://www.vagrantup.com/downloads.html) にアクセスし、[download older versions of Vagrant](https://releases.hashicorp.com/vagrant/)をクリックすると、
@@ -40,10 +39,14 @@ SHIRASAGI 開発用の Vagrant Box を使用するには次のいずれかの環
 
 適当なディレクトリを作成し、次のような内容を持つ `Vagrantfile` を作成してください。
 
+    $ mkdir shirasagi-dev
+    $ cd shirasagi-dev
+    $ cat Vagrantfile
     Vagrant.configure(2) do |config|
-      config.vm.box = "ss-vagrant-v1.9.1"
-      config.vm.box_url = "https://github.com/shirasagi/ss-vagrant/releases/download/ss-vagrant-v1.9.1/ss-vagrant-virtualbox-x86_64.box"
+      config.vm.box = "ss-vagrant-v1.10.0"
+      config.vm.box_url = "https://github.com/shirasagi/ss-vagrant/releases/download/v1.10.0/ss-vagrant-virtualbox-x86_64.box"
       config.vm.network "forwarded_port", guest: 3000, host: 3000
+      config.vm.network "private_network", ip: "192.168.33.10"
     end
 
 次のコマンドを実行してください。シラサギ開発環境が起動します。
@@ -55,31 +58,26 @@ SHIRASAGI 開発用の Vagrant Box を使用するには次のいずれかの環
 
 ### hosts ファイルの設定
 
-待っている間に、シラサギを使用するには hosts ファイルの設定が必要なため、ここからは hosts ファイルを設定していきます。
-
-hostsファイルの設定の方法
-
-    127.0.0.1 company.example.jp childcare.example.jp opendata.example.jp lp.example.jp
+待っている間に、シラサギを使用するには hosts ファイルの設定が必要なため、ここからは hosts ファイルを設定していきます。
+hosts ファイルはメモ帳から開くことができます。
+その際メモ帳は管理者権限で開いてください。
 
 Windows の hosts ファイルは以下にあります。
-編集には管理者権限が必要です。
 
-●Windows 10のhostsファイル
-C:\Windows\System32\drivers\etc\hosts
+* Windows の hosts ファイル
 
-●Windows 8 / Windows 8.1のhostsファイル
-C:\Windows\System32\drivers\etc\hosts
+      C:\Windows\System32\drivers\etc\hosts
 
-●Windows 7のhostsファイル
-C:\Windows\System32\drivers\etc\hosts
+Mac の hosts ファイルは以下にあります。
+編集には root 権限が必要です。
 
-●Windows Vistaのhostsファイル
-C:\Windows\System32\drivers\etc\hosts
+* Mac の hosts ファイル
 
-Macのhostsファイルは以下にあります。
-編集にはroot権限が必要です。
+      /etc/hosts
 
-/etc/hosts
+hosts ファイルが開けましたら以下の一行を入力してください。
+
+  127.0.0.1 company.example.jp childcare.example.jp opendata.example.jp lp.example.jp
 
 ### シラサギへアクセス
 
@@ -142,7 +140,7 @@ bundle exec unicorn_rails -c /var/www/shirasagi/config/unicorn.rb -E production 
 
 ### 企業サンプルサイト
 
-ブラウザで "company.example.jp:3000" にアクセスしてみてください。
+ブラウザで "http://company.example.jp:3000" にアクセスしてみてください。
 次のような企業サンプルサイトの画面が表示されるはずです。
 
 | 企業サンプル                             |
@@ -151,7 +149,7 @@ bundle exec unicorn_rails -c /var/www/shirasagi/config/unicorn.rb -E production 
 
 ### 子育て支援サンプルサイト
 
-ブラウザで "childcare.example.jp:3000" にアクセスしてみてください。
+ブラウザで "http://childcare.example.jp:3000" にアクセスしてみてください。
 次のような子育て支援サンプルサイトの画面が表示されるはずです。
 
 | 子育て支援サンプル                              |
@@ -160,7 +158,7 @@ bundle exec unicorn_rails -c /var/www/shirasagi/config/unicorn.rb -E production 
 
 ### オープンデータサンプルサイト
 
-ブラウザで "opendata.example.jp:3000" にアクセスしてみてください。
+ブラウザで "http://opendata.example.jp:3000" にアクセスしてみてください。
 次のようなオープンデータサンプルサイトの画面が表示されるはずです。
 
 | オープンデータ                                  |
@@ -169,7 +167,7 @@ bundle exec unicorn_rails -c /var/www/shirasagi/config/unicorn.rb -E production 
 
 ### LPサンプルサイト
 
-ブラウザで "lp.example.jp:3000" にアクセスしてみてください。
+ブラウザで "http://lp.example.jp:3000" にアクセスしてみてください。
 次のようなLPサンプルサイトの画面が表示されるはずです。
 
 | LPサンプル                                  |
@@ -286,12 +284,12 @@ bundle exec unicorn_rails -c /var/www/shirasagi/config/unicorn.rb -E production 
 
 ### Vagrant Box の中身
 
-* VirtualBox 5.1.28 r117968 Guest Addition
-* CentOS 7.4.1708 (2017-09-22 時点での最新)
-* MongoDB 3.4.9
-* RVM 1.29.3
-* Ruby 2.4.2p198
-* SHIRASAGI のソース一式 (v1.6.0 RC)
+* VirtualBox 5.2.20 r125813 Guest Addition
+* CentOS 7.6.1810 (2018-12-28 時点での最新)
+* MongoDB 3.4.14
+* RVM 1.29.4
+* Ruby 2.4.4p296
+* SHIRASAGI のソース一式 (v1.10.0)
 
 ### Vagrant Box のビルド方法
 
